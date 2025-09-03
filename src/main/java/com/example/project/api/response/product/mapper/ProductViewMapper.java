@@ -9,6 +9,11 @@ import org.springframework.stereotype.Component;
 public class ProductViewMapper implements OutputMapper<Product, ProductViewDTO> {
     @Override
     public ProductViewDTO toEntity(Product model) {
-        return null;
+        return new ProductViewDTO(
+                model.getId(),
+                model.getName().getValue(),
+                model.getDescription().getValue(),
+                model.getPrice().getValue()
+        );
     }
 }

@@ -33,7 +33,7 @@ public class CategoryController {
         return ApiResponse.success(categoryViewDTOs).createResponse(HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoryViewDTO>> getById(@PathVariable("id") Long id) {
         Category category = categoryService.getById(id);
         CategoryViewDTO categoryViewDTO = categoryViewMapper.toEntity(category);
@@ -50,17 +50,17 @@ public class CategoryController {
         return ApiResponse.success(categoryViewDTO).createResponse(HttpStatus.CREATED);
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<ApiResponse<CategoryViewDTO>> updateById(@PathVariable("id") Long id, @RequestBody CategoryUpdateDTO form) {
-        Category partialCategory = categoryUpdateMapper.toModel(form);
-        Category targetCategory = categoryService.getById(id);
-        Category updatedCategory = categoryService.update(partialCategory, targetCategory);
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<CategoryViewDTO>> updateById(@PathVariable("id") Long id, @RequestBody CategoryCreateDTO form) {
+        CategoryUpdateDTO updateDTO = new CategoryUpdateDTO(id, form.getName());
+        Category changedCategory = categoryUpdateMapper.toModel(updateDTO);
+        Category updatedCategory = categoryService.update(changedCategory);
         CategoryViewDTO categoryViewDTO = categoryViewMapper.toEntity(updatedCategory);
 
         return ApiResponse.success(categoryViewDTO).createResponse(HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> deleteById(@PathVariable("id") Long id) {
         Category category = categoryService.getById(id);
         categoryService.delete(category);

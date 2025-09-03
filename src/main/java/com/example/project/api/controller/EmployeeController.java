@@ -33,7 +33,7 @@ public class EmployeeController {
         return ApiResponse.success(employeeViewDTOs).createResponse(HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<EmployeeViewDTO>> getById(@PathVariable("id") Long id) {
         Employee employee = employeeService.getById(id);
         EmployeeViewDTO employeeViewDTO = employeeViewMapper.toEntity(employee);
@@ -50,17 +50,26 @@ public class EmployeeController {
         return ApiResponse.success(employeeViewDTO).createResponse(HttpStatus.CREATED);
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<ApiResponse<EmployeeViewDTO>> updateById(@PathVariable("id") Long id, @RequestBody EmployeeUpdateDTO form) {
-        Employee partialEmployee = employeeUpdateMapper.toModel(form);
-        Employee targetEmployee = employeeService.getById(id);
-        Employee updatedEmployee = employeeService.update(partialEmployee, targetEmployee);
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<EmployeeViewDTO>> updateById(@PathVariable("id") Long id, @RequestBody EmployeeCreateDTO form) {
+        EmployeeUpdateDTO updateDTO = new EmployeeUpdateDTO(
+                id,
+                form.getSalary(),
+                form.getHireDate(),
+                form.getContractType(),
+                form.getName(),
+                form.getDocument(),
+                form.getEmail(),
+                form.getPhone()
+        );
+        Employee changedEmployee = employeeUpdateMapper.toModel(updateDTO);
+        Employee updatedEmployee = employeeService.update(changedEmployee);
         EmployeeViewDTO employeeViewDTO = employeeViewMapper.toEntity(updatedEmployee);
 
         return ApiResponse.success(employeeViewDTO).createResponse(HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> deleteById(@PathVariable("id") Long id) {
         Employee employee = employeeService.getById(id);
         employeeService.delete(employee);

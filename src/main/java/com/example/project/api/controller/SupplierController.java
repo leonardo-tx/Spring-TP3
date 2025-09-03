@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class SupplierController {
         return ApiResponse.success(supplierViewDTOs).createResponse(HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<SupplierViewDTO>> getById(@PathVariable("id") Long id) {
         Supplier supplier = supplierService.getById(id);
         SupplierViewDTO supplierViewDTO = supplierViewMapper.toEntity(supplier);
@@ -50,17 +51,23 @@ public class SupplierController {
         return ApiResponse.success(supplierViewDTO).createResponse(HttpStatus.CREATED);
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<ApiResponse<SupplierViewDTO>> updateById(@PathVariable("id") Long id, @RequestBody SupplierUpdateDTO form) {
-        Supplier partialSupplier = supplierUpdateMapper.toModel(form);
-        Supplier targetSupplier = supplierService.getById(id);
-        Supplier updatedSupplier = supplierService.update(partialSupplier, targetSupplier);
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<SupplierViewDTO>> updateById(@PathVariable("id") Long id, @RequestBody SupplierCreateDTO form) {
+        SupplierUpdateDTO updateDTO = new SupplierUpdateDTO(
+                id,
+                form.getName(),
+                form.getDocument(),
+                form.getEmail(),
+                form.getPhone()
+        );
+        Supplier changedSupplier = supplierUpdateMapper.toModel(updateDTO);
+        Supplier updatedSupplier = supplierService.update(changedSupplier);
         SupplierViewDTO supplierViewDTO = supplierViewMapper.toEntity(updatedSupplier);
 
         return ApiResponse.success(supplierViewDTO).createResponse(HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> deleteById(@PathVariable("id") Long id) {
         Supplier supplier = supplierService.getById(id);
         supplierService.delete(supplier);

@@ -33,7 +33,7 @@ public class ProductController {
         return ApiResponse.success(productViewDTOs).createResponse(HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ProductViewDTO>> getById(@PathVariable("id") Long id) {
         Product product = productService.getById(id);
         ProductViewDTO productViewDTO = productViewMapper.toEntity(product);
@@ -50,17 +50,22 @@ public class ProductController {
         return ApiResponse.success(productViewDTO).createResponse(HttpStatus.CREATED);
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<ApiResponse<ProductViewDTO>> updateById(@PathVariable("id") Long id, @RequestBody ProductUpdateDTO form) {
-        Product partialProduct = productUpdateMapper.toModel(form);
-        Product targetProduct = productService.getById(id);
-        Product updatedProduct = productService.update(partialProduct, targetProduct);
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ProductViewDTO>> updateById(@PathVariable("id") Long id, @RequestBody ProductCreateDTO form) {
+        ProductUpdateDTO updateDTO = new ProductUpdateDTO(
+                id,
+                form.getName(),
+                form.getDescription(),
+                form.getPrice()
+        );
+        Product changedProduct = productUpdateMapper.toModel(updateDTO);
+        Product updatedProduct = productService.update(changedProduct);
         ProductViewDTO productViewDTO = productViewMapper.toEntity(updatedProduct);
 
         return ApiResponse.success(productViewDTO).createResponse(HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> deleteById(@PathVariable("id") Long id) {
         Product product = productService.getById(id);
         productService.delete(product);

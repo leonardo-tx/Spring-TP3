@@ -8,41 +8,53 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EntityDocument {
+    public static final int CPF_LENGTH = 11;
+    public static final int CNPJ_LENGTH = 14;
+
     private final String value;
     private final EntityType type;
 
-    public static EntityDocument valueOf(String value, EntityType type) {
-        if (type == null) {
-            throw new ValidationException("entity.document.type.null", "The document type cannot be null.");
-        }
+    public static EntityDocument valueOf(String value) {
         if (value == null) {
-            throw new ValidationException("entity.document.value.null", "The document value cannot be null.");
+            throw new ValidationException("entity.document.null", "The document value cannot be null.");
         }
+        String cleanValue = value.replaceAll("\\D", "");
+        EntityType type = switch (cleanValue.length()) {
+            case CPF_LENGTH -> EntityType.NATURAL;
+            case CNPJ_LENGTH -> EntityType.LEGAL;
+            default -> {
+                String message = String.format("The CPF must have exactly %d digits or the CNPJ must have %d digits.", CPF_LENGTH, CNPJ_LENGTH);
+                throw new ValidationException("entity.document.invalid.length", message);
+            }
+        };
         String normalizedValue = switch (type) {
-            case NATURAL -> validateCPF(value);
-            case LEGAL -> validateCNPJ(value);
+            case NATURAL -> validateCPF(cleanValue);
+            case LEGAL -> validateCNPJ(cleanValue);
         };
         return new EntityDocument(normalizedValue, type);
     }
 
-    public static EntityDocument fromInfra(String value, EntityType type) {
-        return new EntityDocument(value, type);
+    public static EntityDocument fromInfra(String value) {
+        if (value.length() == CPF_LENGTH) {
+            return new EntityDocument(value, EntityType.NATURAL);
+        }
+        if (value.length() == CNPJ_LENGTH) {
+            return new EntityDocument(value, EntityType.LEGAL);
+        }
+        throw new IllegalArgumentException("The document from the infrastructure is not valid.");
     }
 
     private static String validateCPF(String value) {
         String cleanValue = value.replaceAll("\\D", "");
-        if (cleanValue.length() != 11) {
-            throw new ValidationException("entity.document.cpf.invalid.length", "The CPF must have exactly 11 digits.");
-        }
         if (isAllSameDigits(cleanValue)) {
             throw new ValidationException("entity.document.cpf.invalid.sequence", "The CPF cannot have all identical digits.");
         }
         int digit1 = calculateCPFDigit(cleanValue, 10);
-        if (digit1 != Character.getNumericValue(cleanValue.charAt(9))) {
+        if (digit1 != Character.getNumericValue(cleanValue.charAt(CPF_LENGTH - 2))) {
             throw new ValidationException("entity.document.cpf.invalid.digit1", "The CPF first verification digit doesn't match.");
         }
         int digit2 = calculateCPFDigit(cleanValue, 11);
-        if (digit2 != Character.getNumericValue(cleanValue.charAt(10))) {
+        if (digit2 != Character.getNumericValue(cleanValue.charAt(CPF_LENGTH - 1))) {
             throw new ValidationException("entity.document.cpf.invalid.digit2", "The CPF second verification digit doesn't match.");
         }
         return cleanValue;
@@ -50,18 +62,15 @@ public final class EntityDocument {
 
     private static String validateCNPJ(String value) {
         String cleanValue = value.replaceAll("\\D", "");
-        if (cleanValue.length() != 14) {
-            throw new ValidationException("entity.document.cnpj.invalid.length", "The CNPJ must have exactly 14 digits.");
-        }
         if (isAllSameDigits(cleanValue)) {
             throw new ValidationException("entity.document.cnpj.invalid.sequence", "The CNPJ cannot have all identical digits.");
         }
         int digit1 = calculateCNPJDigit(cleanValue, 5);
-        if (digit1 != Character.getNumericValue(cleanValue.charAt(12))) {
+        if (digit1 != Character.getNumericValue(cleanValue.charAt(CNPJ_LENGTH - 2))) {
             throw new ValidationException("entity.document.cnpj.invalid.digit1", "The CNPJ first verification digit doesn't match.");
         }
         int digit2 = calculateCNPJDigit(cleanValue, 6);
-        if (digit2 != Character.getNumericValue(cleanValue.charAt(13))) {
+        if (digit2 != Character.getNumericValue(cleanValue.charAt(CNPJ_LENGTH - 1))) {
             throw new ValidationException("entity.document.cnpj.invalid.digit2", "The CNPJ second verification digit doesn't match.");
         }
 

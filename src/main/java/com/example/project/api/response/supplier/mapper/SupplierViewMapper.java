@@ -9,6 +9,13 @@ import org.springframework.stereotype.Component;
 public class SupplierViewMapper implements OutputMapper<Supplier, SupplierViewDTO> {
     @Override
     public SupplierViewDTO toEntity(Supplier model) {
-        return null;
+        return new SupplierViewDTO(
+                model.getId(),
+                model.getName().getValue(),
+                model.getDocument().getValue(),
+                model.getDocument().getType(),
+                model.getEmail().getValue(),
+                model.getPhone().getValue()
+        );
     }
 }

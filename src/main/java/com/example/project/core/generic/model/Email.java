@@ -22,7 +22,8 @@ public final class Email {
             throw new ValidationException("email.null", "The email cannot be null.");
         }
         if (value.length() < MIN_LENGTH || value.length() > MAX_LENGTH) {
-            throw new ValidationException("email.invalid.length", "The email length must be between " + MIN_LENGTH + " and " + MAX_LENGTH + " characters.");
+            String message = String.format("The email length must be between %d and %d characters.", MIN_LENGTH, MAX_LENGTH);
+            throw new ValidationException("email.invalid.length", message);
         }
         Matcher matcher = PATTERN.matcher(value);
         if (!matcher.matches()) {

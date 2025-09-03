@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(Category category) {
-        if (category == null) {
-            throw new IllegalArgumentException("The category must not be null.");
-        }
+        Objects.requireNonNull(category);
         if (category.getId() == null) {
             throw new IllegalArgumentException("The category to delete must have an identifier.");
         }
@@ -38,9 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category create(Category category) {
-        if (category == null) {
-            throw new IllegalArgumentException("The category must not be null.");
-        }
+        Objects.requireNonNull(category);
         if (category.getId() != null) {
             throw new IllegalArgumentException("The category to create must not have an identifier.");
         }
@@ -48,8 +45,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category update(Category partialCategory, Category targetCategory) {
-        // TODO
-        return null;
+    public Category update(Category category) {
+        Objects.requireNonNull(category);
+        if (category.getId() == null) {
+            throw new IllegalArgumentException("The category to update must have an identifier.");
+        }
+        return categoryRepository.save(category);
     }
 }

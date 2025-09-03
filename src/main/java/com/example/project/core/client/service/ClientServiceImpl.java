@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +28,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void delete(Client client) {
-        if (client == null) {
-            throw new IllegalArgumentException("The client must not be null.");
-        }
+        Objects.requireNonNull(client);
         if (client.getId() == null) {
             throw new IllegalArgumentException("The client to delete must have an identifier.");
         }
@@ -38,9 +37,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client create(Client client) {
-        if (client == null) {
-            throw new IllegalArgumentException("The client must not be null.");
-        }
+        Objects.requireNonNull(client);
         if (client.getId() != null) {
             throw new IllegalArgumentException("The client to create must not have an identifier.");
         }
@@ -48,8 +45,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client update(Client partialClient, Client targetClient) {
-        // TODO
-        return null;
+    public Client update(Client client) {
+        Objects.requireNonNull(client);
+        if (client.getId() == null) {
+            throw new IllegalArgumentException("The client to update must have an identifier.");
+        }
+        return clientRepository.save(client);
     }
 }

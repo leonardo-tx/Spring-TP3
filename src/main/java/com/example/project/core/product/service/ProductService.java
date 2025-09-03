@@ -9,5 +9,5 @@ public interface ProductService {
     Product getById(Long id);
     void delete(Product product);
     Product create(Product product);
-    Product update(Product partialProduct, Product targetProduct);
+    Product update(Product product);
 }

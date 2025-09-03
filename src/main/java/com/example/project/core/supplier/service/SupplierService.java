@@ -9,5 +9,5 @@ public interface SupplierService {
     Supplier getById(Long id);
     void delete(Supplier supplier);
     Supplier create(Supplier supplier);
-    Supplier update(Supplier partialSupplier, Supplier targetSupplier);
+    Supplier update(Supplier supplier);
 }

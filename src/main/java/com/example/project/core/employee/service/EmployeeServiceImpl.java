@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +28,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void delete(Employee employee) {
-        if (employee == null) {
-            throw new IllegalArgumentException("The employee must not be null.");
-        }
+        Objects.requireNonNull(employee);
         if (employee.getId() == null) {
             throw new IllegalArgumentException("The employee to delete must have an identifier.");
         }
@@ -38,9 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee create(Employee employee) {
-        if (employee == null) {
-            throw new IllegalArgumentException("The employee must not be null.");
-        }
+        Objects.requireNonNull(employee);
         if (employee.getId() != null) {
             throw new IllegalArgumentException("The employee to create must not have an identifier.");
         }
@@ -48,8 +45,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee update(Employee partialEmployee, Employee targetEmployee) {
-        // TODO
-        return null;
+    public Employee update(Employee employee) {
+        Objects.requireNonNull(employee);
+        if (employee.getId() == null) {
+            throw new IllegalArgumentException("The employee to update must have an identifier.");
+        }
+        return employeeRepository.save(employee);
     }
 }

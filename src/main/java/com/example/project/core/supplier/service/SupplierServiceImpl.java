@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +28,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public void delete(Supplier supplier) {
-        if (supplier == null) {
-            throw new IllegalArgumentException("The supplier must not be null.");
-        }
+        Objects.requireNonNull(supplier);
         if (supplier.getId() == null) {
             throw new IllegalArgumentException("The supplier to delete must have an identifier.");
         }
@@ -38,9 +37,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public Supplier create(Supplier supplier) {
-        if (supplier == null) {
-            throw new IllegalArgumentException("The supplier must not be null.");
-        }
+        Objects.requireNonNull(supplier);
         if (supplier.getId() != null) {
             throw new IllegalArgumentException("The supplier to create must not have an identifier.");
         }
@@ -48,8 +45,11 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public Supplier update(Supplier partialSupplier, Supplier targetSupplier) {
-        // TODO
-        return null;
+    public Supplier update(Supplier supplier) {
+        Objects.requireNonNull(supplier);
+        if (supplier.getId() == null) {
+            throw new IllegalArgumentException("The supplier to update must have an identifier.");
+        }
+        return supplierRepository.save(supplier);
     }
 }

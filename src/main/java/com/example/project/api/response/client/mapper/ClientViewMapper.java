@@ -9,6 +9,14 @@ import org.springframework.stereotype.Component;
 public class ClientViewMapper implements OutputMapper<Client, ClientViewDTO> {
     @Override
     public ClientViewDTO toEntity(Client model) {
-        return null;
+        return new ClientViewDTO(
+                model.getId(),
+                model.getRegisterDate(),
+                model.getName().getValue(),
+                model.getDocument().getValue(),
+                model.getDocument().getType(),
+                model.getEmail().getValue(),
+                model.getPhone().getValue()
+        );
     }
 }

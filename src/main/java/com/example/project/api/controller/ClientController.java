@@ -33,7 +33,7 @@ public class ClientController {
         return ApiResponse.success(clientViewDTOs).createResponse(HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ClientViewDTO>> getById(@PathVariable("id") Long id) {
         Client client = clientService.getById(id);
         ClientViewDTO clientViewDTO = clientViewMapper.toEntity(client);
@@ -50,17 +50,24 @@ public class ClientController {
         return ApiResponse.success(clientViewDTO).createResponse(HttpStatus.CREATED);
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<ApiResponse<ClientViewDTO>> updateById(@PathVariable("id") Long id, @RequestBody ClientUpdateDTO form) {
-        Client partialClient = clientUpdateMapper.toModel(form);
-        Client targetClient = clientService.getById(id);
-        Client updatedClient = clientService.update(partialClient, targetClient);
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ClientViewDTO>> updateById(@PathVariable("id") Long id, @RequestBody ClientCreateDTO form) {
+        ClientUpdateDTO updateDTO = new ClientUpdateDTO(
+                id,
+                form.getRegisterDate(),
+                form.getName(),
+                form.getDocument(),
+                form.getEmail(),
+                form.getPhone()
+        );
+        Client changedClient = clientUpdateMapper.toModel(updateDTO);
+        Client updatedClient = clientService.update(changedClient);
         ClientViewDTO clientViewDTO = clientViewMapper.toEntity(updatedClient);
 
         return ApiResponse.success(clientViewDTO).createResponse(HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> deleteById(@PathVariable("id") Long id) {
         Client client = clientService.getById(id);
         clientService.delete(client);

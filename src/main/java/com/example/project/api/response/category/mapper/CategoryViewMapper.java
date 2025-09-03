@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component;
 public class CategoryViewMapper implements OutputMapper<Category, CategoryViewDTO> {
     @Override
     public CategoryViewDTO toEntity(Category model) {
-        return null;
+        return new CategoryViewDTO(model.getId(), model.getName().getValue());
     }
 }

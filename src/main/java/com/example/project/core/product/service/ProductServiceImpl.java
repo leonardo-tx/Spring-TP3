@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +28,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(Product product) {
-        if (product == null) {
-            throw new IllegalArgumentException("The product must not be null.");
-        }
+        Objects.requireNonNull(product);
         if (product.getId() == null) {
             throw new IllegalArgumentException("The product to delete must have an identifier.");
         }
@@ -38,9 +37,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product create(Product product) {
-        if (product == null) {
-            throw new IllegalArgumentException("The product must not be null.");
-        }
+        Objects.requireNonNull(product);
         if (product.getId() != null) {
             throw new IllegalArgumentException("The product to create must not have an identifier.");
         }
@@ -48,8 +45,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product update(Product partialProduct, Product targetProduct) {
-        // TODO
-        return null;
+    public Product update(Product product) {
+        Objects.requireNonNull(product);
+        if (product.getId() == null) {
+            throw new IllegalArgumentException("The product to update must have an identifier.");
+        }
+        return productRepository.save(product);
     }
 }

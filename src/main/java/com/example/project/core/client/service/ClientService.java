@@ -9,5 +9,5 @@ public interface ClientService {
     Client getById(Long id);
     void delete(Client client);
     Client create(Client client);
-    Client update(Client partialClient, Client targetClient);
+    Client update(Client client);
 }
