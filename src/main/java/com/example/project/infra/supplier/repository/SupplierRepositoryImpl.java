@@ -30,6 +30,11 @@ public class SupplierRepositoryImpl implements SupplierRepository {
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return supplierRepositoryJPA.existsById(id);
+    }
+
+    @Override
     public void delete(Supplier supplier) {
         supplierRepositoryJPA.deleteById(supplier.getId());
     }

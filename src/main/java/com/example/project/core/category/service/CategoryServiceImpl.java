@@ -50,6 +50,9 @@ public class CategoryServiceImpl implements CategoryService {
         if (category.getId() == null) {
             throw new IllegalArgumentException("The category to update must have an identifier.");
         }
+        if (!categoryRepository.existsById(category.getId())) {
+            throw new NotFoundException("category.not.found", "Could not find the category with the specified id.");
+        }
         return categoryRepository.save(category);
     }
 }

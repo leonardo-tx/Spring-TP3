@@ -8,7 +8,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ProductDescription {
-    public static final int MIN_LENGTH = 2;
     public static final int MAX_LENGTH = 512;
 
     private final String value;
@@ -17,8 +16,8 @@ public final class ProductDescription {
         if (value == null) {
             throw new ValidationException("product.description.null", "The product description cannot be null.");
         }
-        if (value.length() < MIN_LENGTH || value.length() > MAX_LENGTH) {
-            String message = String.format("The product description length must be between %d and %d characters.", MIN_LENGTH, MAX_LENGTH);
+        if (value.length() > MAX_LENGTH) {
+            String message = String.format("The product description length must be less or equal to %d characters.", MAX_LENGTH);
             throw new ValidationException("product.description.invalid.length", message);
         }
         return new ProductDescription(value);

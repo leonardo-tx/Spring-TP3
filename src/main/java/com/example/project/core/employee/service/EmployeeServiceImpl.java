@@ -50,6 +50,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee.getId() == null) {
             throw new IllegalArgumentException("The employee to update must have an identifier.");
         }
+        if (!employeeRepository.existsById(employee.getId())) {
+            throw new NotFoundException("employee.not.found", "Could not find the employee with the specified id.");
+        }
         return employeeRepository.save(employee);
     }
 }

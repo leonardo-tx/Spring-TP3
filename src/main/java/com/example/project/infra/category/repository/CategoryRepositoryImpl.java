@@ -30,6 +30,11 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return categoryRepositoryJPA.existsById(id);
+    }
+
+    @Override
     public void delete(Category category) {
         categoryRepositoryJPA.deleteById(category.getId());
     }

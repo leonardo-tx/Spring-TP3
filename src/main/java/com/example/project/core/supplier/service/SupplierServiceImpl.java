@@ -50,6 +50,9 @@ public class SupplierServiceImpl implements SupplierService {
         if (supplier.getId() == null) {
             throw new IllegalArgumentException("The supplier to update must have an identifier.");
         }
+        if (!supplierRepository.existsById(supplier.getId())) {
+            throw new NotFoundException("supplier.not.found", "Could not find the supplier with the specified id.");
+        }
         return supplierRepository.save(supplier);
     }
 }

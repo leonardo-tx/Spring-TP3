@@ -30,6 +30,11 @@ public class ClientRepositoryImpl implements ClientRepository {
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return clientRepositoryJPA.existsById(id);
+    }
+
+    @Override
     public void delete(Client client) {
         clientRepositoryJPA.deleteById(client.getId());
     }

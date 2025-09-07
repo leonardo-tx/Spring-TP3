@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface EmployeeRepository {
     List<Employee> findAll();
     Optional<Employee> findById(Long id);
+    boolean existsById(Long id);
     void delete(Employee employee);
     Employee save(Employee employee);
 }

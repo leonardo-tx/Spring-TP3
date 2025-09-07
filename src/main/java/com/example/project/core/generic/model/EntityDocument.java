@@ -10,6 +10,8 @@ import lombok.Getter;
 public final class EntityDocument {
     public static final int CPF_LENGTH = 11;
     public static final int CNPJ_LENGTH = 14;
+    private static final int[] CNPJ_FIRST_DIGIT_WEIGHTS = {5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+    private static final int[] CNPJ_SECOND_DIGIT_WEIGHTS = {6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
 
     private final String value;
     private final EntityType type;
@@ -65,15 +67,14 @@ public final class EntityDocument {
         if (isAllSameDigits(cleanValue)) {
             throw new ValidationException("entity.document.cnpj.invalid.sequence", "The CNPJ cannot have all identical digits.");
         }
-        int digit1 = calculateCNPJDigit(cleanValue, 5);
+        int digit1 = calculateCNPJDigit(cleanValue, CNPJ_FIRST_DIGIT_WEIGHTS);
         if (digit1 != Character.getNumericValue(cleanValue.charAt(CNPJ_LENGTH - 2))) {
             throw new ValidationException("entity.document.cnpj.invalid.digit1", "The CNPJ first verification digit doesn't match.");
         }
-        int digit2 = calculateCNPJDigit(cleanValue, 6);
+        int digit2 = calculateCNPJDigit(cleanValue, CNPJ_SECOND_DIGIT_WEIGHTS);
         if (digit2 != Character.getNumericValue(cleanValue.charAt(CNPJ_LENGTH - 1))) {
             throw new ValidationException("entity.document.cnpj.invalid.digit2", "The CNPJ second verification digit doesn't match.");
         }
-
         return cleanValue;
     }
 
@@ -97,11 +98,10 @@ public final class EntityDocument {
         return remainder < 2 ? 0 : 11 - remainder;
     }
 
-    private static int calculateCNPJDigit(String cnpj, int weightStart) {
-        int[] weights = {6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+    private static int calculateCNPJDigit(String cnpj, int[] weights) {
         int sum = 0;
-        for (int i = 0; i < weightStart - 1; i++) {
-            int digit = Character.getNumericValue(cnpj.charAt(i));
+        for (int i = 0; i < weights.length; i++) {
+            int digit = cnpj.charAt(i) - '0';
             sum += digit * weights[i];
         }
         int remainder = sum % 11;

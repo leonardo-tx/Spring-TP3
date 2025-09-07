@@ -30,6 +30,11 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return productRepositoryJPA.existsById(id);
+    }
+
+    @Override
     public void delete(Product product) {
         productRepositoryJPA.deleteById(product.getId());
     }

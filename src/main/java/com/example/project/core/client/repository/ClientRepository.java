@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface ClientRepository {
     List<Client> findAll();
     Optional<Client> findById(Long id);
+    boolean existsById(Long id);
     void delete(Client client);
     Client save(Client client);
 }

@@ -30,6 +30,11 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return employeeRepositoryJPA.existsById(id);
+    }
+
+    @Override
     public void delete(Employee employee) {
         employeeRepositoryJPA.deleteById(employee.getId());
     }

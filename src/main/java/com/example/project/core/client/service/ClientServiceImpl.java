@@ -50,6 +50,9 @@ public class ClientServiceImpl implements ClientService {
         if (client.getId() == null) {
             throw new IllegalArgumentException("The client to update must have an identifier.");
         }
+        if (!clientRepository.existsById(client.getId())) {
+            throw new NotFoundException("client.not.found", "Could not find the client with the specified id.");
+        }
         return clientRepository.save(client);
     }
 }

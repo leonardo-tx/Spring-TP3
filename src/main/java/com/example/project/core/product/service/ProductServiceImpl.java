@@ -50,6 +50,9 @@ public class ProductServiceImpl implements ProductService {
         if (product.getId() == null) {
             throw new IllegalArgumentException("The product to update must have an identifier.");
         }
+        if (!productRepository.existsById(product.getId())) {
+            throw new NotFoundException("product.not.found", "Could not find the product with the specified id.");
+        }
         return productRepository.save(product);
     }
 }
